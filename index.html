@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L-8 Arena</title>
+    <title>L-8 Arena - Moving Grid</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Mr+Dafoe&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
 
         :root {
             --main-pink: #ff2e63;
             --white: #ffffff;
-            --black: #080808;
             --start-delay: 1s; 
             --glitch-duration: 0.3s;
             --nav-delay: 1.2s; 
@@ -35,8 +35,32 @@
             justify-content: center;
             align-items: center;
             position: relative;
+            /* Background Explosion (Glitch) */
             animation: bg-explode var(--glitch-duration) linear forwards;
             animation-delay: var(--start-delay);
+            /* Ensure grid stays within bounds */
+            overflow: hidden; 
+        }
+
+        /* --- THE MOVING GRID --- */
+        .landing-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%; /* Wider to prevent flickering during move */
+            height: 200%;
+            
+            /* THIN WHITE GRID PATTERN */
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+            background-size: 50px 50px; /* Size of grid squares */
+            
+            z-index: 1; /* Sits on top of pink bg, but below text */
+            
+            /* THE MOVING ANIMATION */
+            animation: grid-scroll 4s linear infinite;
         }
 
         /* --- NAVBAR --- */
@@ -50,7 +74,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 100;
+            z-index: 100; /* High z-index to stay clickable */
             opacity: 0;
             animation: fade-in 0.5s ease-out forwards;
             animation-delay: var(--nav-delay);
@@ -68,167 +92,58 @@
         }
         .nav-link:hover { text-decoration: underline; }
 
-        /* --- HERO TEXT --- */
-        .container { width: 100%; display: flex; justify-content: center; }
+        /* --- HERO TEXT BLOCK --- */
+        .container { 
+            width: 100%; 
+            display: flex; 
+            justify-content: center; 
+            position: relative; 
+            z-index: 10; /* Ensure text is above the grid */
+        }
 
         .text-block {
             font-size: 12vw; 
             text-transform: uppercase;
             display: flex; 
-            flex-direction: row; 
-            gap: 0.3em; 
-            align-items: center;
+            flex-direction: column; 
+            align-items: flex-start;
+            line-height: 0.8;
+            
             opacity: 0;
             animation: text-appear var(--glitch-duration) linear forwards;
             animation-delay: var(--start-delay);
         }
 
+        /* "LOVE IS" */
         .part-1 {
             display: block;
+            color: var(--white);
             animation: text-style-flash var(--glitch-duration) linear forwards;
             animation-delay: var(--start-delay);
         }
 
+        /* "Here" */
         .part-2 {
             display: block;
-            transform-origin: center;
-            transform: scaleY(-1); 
-            animation: 
-                flip-up var(--glitch-duration) steps(1) forwards, 
-                text-style-flash var(--glitch-duration) linear forwards;
+            font-family: 'Mr Dafoe', cursive;
+            text-transform: none;
+            font-size: 14vw;
+            margin-left: 1.2em; 
+            margin-top: -0.1em;
+            
+            animation: here-text-style var(--glitch-duration) linear forwards;
             animation-delay: var(--start-delay);
         }
 
-        /* --- SECTION 2: HOW IT WORKS --- */
-        .info-section {
-            width: 100%;
-            min-height: 80vh; 
-            background-color: var(--white);
-            color: var(--main-pink);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 100px 20px;
-            box-sizing: border-box;
-        }
-
-        .section-title {
-            font-size: 5rem;
-            text-transform: uppercase;
-            margin: 0 0 20px 0;
-            text-align: center;
-            letter-spacing: 2px;
-        }
-
-        .section-subtitle {
-            font-family: 'Roboto Mono', monospace;
-            font-size: 1.2rem;
-            max-width: 800px;
-            text-align: center;
-            margin-bottom: 80px;
-            line-height: 1.6;
-            color: #000;
-        }
-
-        .steps-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 50px;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        .step-card {
-            flex: 1;
-            min-width: 300px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .step-icon {
-            width: 120px;
-            height: 120px;
-            margin-bottom: 30px;
-            transition: transform 0.3s ease;
-        }
-        .step-icon:hover { transform: scale(1.1); }
-        .step-icon path, .step-icon circle, .step-icon rect {
-            stroke: var(--main-pink);
-            stroke-width: 2.5;
-            fill: none;
-        }
-        .step-icon text { fill: var(--main-pink); stroke: none; }
-
-        .step-title { font-size: 2.5rem; margin-bottom: 15px; color: var(--main-pink); }
-        .step-desc {
-            font-family: 'Roboto Mono', monospace;
-            font-size: 1rem;
-            line-height: 1.5;
-            color: #333;
-            max-width: 300px;
-        }
-
-        /* --- FOOTER --- */
-        .footer {
-            background-color: var(--main-pink);
-            color: var(--white);
-            padding: 60px 40px 20px 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .footer-content {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            margin-bottom: 40px;
-            border-bottom: 2px solid rgba(255,255,255,0.3);
-            padding-bottom: 40px;
-        }
-
-        .footer-left h3 {
-            font-size: 3rem;
-            margin: 0;
-            line-height: 1;
-        }
-
-        .footer-tagline {
-            font-family: 'Roboto Mono', monospace;
-            font-size: 0.9rem;
-            margin-top: 10px;
-            opacity: 0.8;
-        }
-
-        .footer-right {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            text-align: right;
-        }
-
-        .footer-link {
-            color: var(--white);
-            text-decoration: none;
-            font-size: 1.2rem;
-            text-transform: uppercase;
-        }
-        .footer-link:hover { text-decoration: underline; }
-
-        .footer-bottom {
-            font-family: 'Roboto Mono', monospace;
-            font-size: 0.8rem;
-            opacity: 0.6;
-            text-align: center;
-        }
-
         /* --- ANIMATIONS --- */
+
+        /* Grid Movement */
+        @keyframes grid-scroll {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-50px, 50px); } /* Diagonal move */
+        }
+
+        /* Background Explosion */
         @keyframes bg-explode {
             0% { background: var(--main-pink); }
             10% { background: linear-gradient(105deg, var(--white) 52%, var(--main-pink) 52%); }
@@ -237,33 +152,81 @@
             70% { background: linear-gradient(100deg, var(--white) 45%, var(--main-pink) 45%); }
             100% { background: var(--main-pink); }
         }
+
         @keyframes text-appear { 0% { opacity: 1; } 100% { opacity: 1; } }
         @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+        /* "LOVE IS" Animation */
         @keyframes text-style-flash {
             0% { color: transparent; -webkit-text-stroke: 3px var(--main-pink); letter-spacing: 10px; }
             80% { color: transparent; -webkit-text-stroke: 3px var(--main-pink); letter-spacing: 10px; }
             100% { color: var(--white); -webkit-text-stroke: 0px; letter-spacing: 0px; }
         }
-        @keyframes flip-up { 0% { transform: scaleY(-1); } 90% { transform: scaleY(-1); } 100% { transform: scaleY(1); } }
+
+        /* "Here" Animation */
+        @keyframes here-text-style {
+            0% { 
+                color: transparent; 
+                -webkit-text-stroke: 3px var(--white); 
+                letter-spacing: 5px; 
+            }
+            80% { 
+                color: transparent; 
+                -webkit-text-stroke: 3px var(--white); 
+                letter-spacing: 5px; 
+            }
+            100% { 
+                color: var(--main-pink); 
+                -webkit-text-stroke: 2px var(--white); 
+                letter-spacing: 0px; 
+            }
+        }
+
+        /* --- SECTION 2 & FOOTER --- */
+        .info-section {
+            width: 100%; min-height: 80vh; background-color: var(--white); color: var(--main-pink);
+            display: flex; flex-direction: column; align-items: center; padding: 100px 20px; box-sizing: border-box;
+            position: relative; z-index: 20; /* Above the grid section */
+        }
+        .section-title { font-size: 5rem; text-transform: uppercase; margin: 0 0 20px 0; text-align: center; letter-spacing: 2px; }
+        .section-subtitle { font-family: 'Roboto Mono', monospace; font-size: 1.2rem; max-width: 800px; text-align: center; margin-bottom: 80px; line-height: 1.6; color: #000; }
+        .steps-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 50px; width: 100%; max-width: 1200px; }
+        .step-card { flex: 1; min-width: 300px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .step-icon { width: 120px; height: 120px; margin-bottom: 30px; transition: transform 0.3s ease; }
+        .step-icon:hover { transform: scale(1.1); }
+        .step-icon path, .step-icon circle, .step-icon rect { stroke: var(--main-pink); stroke-width: 2.5; fill: none; }
+        .step-icon text { fill: var(--main-pink); stroke: none; }
+        .step-title { font-size: 2.5rem; margin-bottom: 15px; color: var(--main-pink); }
+        .step-desc { font-family: 'Roboto Mono', monospace; font-size: 1rem; line-height: 1.5; color: #333; max-width: 300px; }
+        
+        .footer { background-color: var(--main-pink); color: var(--white); padding: 60px 40px 20px 40px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 20; }
+        .footer-content { width: 100%; max-width: 1200px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; margin-bottom: 40px; border-bottom: 2px solid rgba(255,255,255,0.3); padding-bottom: 40px; }
+        .footer-left h3 { font-size: 3rem; margin: 0; line-height: 1; }
+        .footer-tagline { font-family: 'Roboto Mono', monospace; font-size: 0.9rem; margin-top: 10px; opacity: 0.8; }
+        .footer-right { display: flex; flex-direction: column; gap: 15px; text-align: right; }
+        .footer-link { color: var(--white); text-decoration: none; font-size: 1.2rem; text-transform: uppercase; }
+        .footer-link:hover { text-decoration: underline; }
+        .footer-bottom { font-family: 'Roboto Mono', monospace; font-size: 0.8rem; opacity: 0.6; text-align: center; }
 
         /* --- MOBILE --- */
         @media (max-width: 768px) {
-            .text-block { font-size: 15vw; }
-            .navbar { padding: 20px; }
-            .nav-link { font-size: 1rem; }
-            .nav-left { gap: 15px; }
+            .text-block { font-size: 18vw; } 
+            .part-2 { font-size: 22vw; margin-left: 0.8em; } 
             
-            .section-title { font-size: 3rem; }
-            .steps-container { flex-direction: column; align-items: center; }
-            .step-card { margin-bottom: 40px; }
-            
-            .footer-content { flex-direction: column; text-align: center; align-items: center; gap: 30px; }
-            .footer-right { text-align: center; }
+            .navbar { padding: 20px; } .nav-link { font-size: 1rem; } .nav-left { gap: 15px; }
+            .section-title { font-size: 3rem; } .steps-container { flex-direction: column; align-items: center; } .step-card { margin-bottom: 40px; }
+            .footer-content { flex-direction: column; text-align: center; align-items: center; gap: 30px; } .footer-right { text-align: center; }
 
+            /* Mobile Thickness Adjustments */
             @keyframes text-style-flash {
                 0% { color: transparent; -webkit-text-stroke: 1px var(--main-pink); letter-spacing: 5px; }
                 80% { color: transparent; -webkit-text-stroke: 1px var(--main-pink); letter-spacing: 5px; }
                 100% { color: var(--white); -webkit-text-stroke: 0px; letter-spacing: 0px; }
+            }
+            @keyframes here-text-style {
+                0% { color: transparent; -webkit-text-stroke: 1px var(--white); letter-spacing: 5px; }
+                80% { color: transparent; -webkit-text-stroke: 1px var(--white); letter-spacing: 5px; }
+                100% { color: var(--main-pink); -webkit-text-stroke: 1px var(--white); letter-spacing: 0px; }
             }
         }
     </style>
@@ -285,7 +248,7 @@
         <div class="container">
             <div class="text-block">
                 <span class="part-1">LOVE IS</span>
-                <span class="part-2">HERE</span>
+                <span class="part-2">Here</span>
             </div>
         </div>
     </div>
@@ -321,8 +284,8 @@
                 </svg>
                 <h3 class="step-title">STACK THE ODDS</h3>
                 <p class="step-desc">
-                    You get 5 free entries per crush. 
-                    Want to beat the competition? Buy more entries (Max 10). 
+                    You get 5 free entries. Utilize these entries wisely (Distribute it among 5 different people or use it all on one, all upto you.)
+                    Want to beat the competition? Buy more entries (Max 15). 
                     It’s a game of numbers.
                 </p>
             </div>
@@ -332,10 +295,10 @@
                     <path d="M10 50 Q50 10 90 50 Q50 90 10 50 Z" />
                     <circle cx="50" cy="50" r="15" />
                 </svg>
-                <h3 class="step-title">06:00 AM REVEAL</h3>
+                <h3 class="step-title">12:00 AM REVEAL</h3>
                 <p class="step-desc">
-                    February 14th. Dawn.
-                    Matches are revealed ONLY if it's mutual or the algorithm picks you.
+                    February 14th. Midnight.
+                    Matches are revealed ONLY to the users who are matched, no one else.
                     Complete anonymity.
                 </p>
             </div>
@@ -363,5 +326,4 @@
     </footer>
 
 </body>
-
 </html>
