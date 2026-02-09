@@ -23,12 +23,6 @@ limiter = Limiter(
 csrf = CSRFProtect(app)
 
 # --- DAUTH CONFIGURATION ---
-DAUTH_CLIENT_ID = 'Q~NtUatrs8lh-Sop'
-DAUTH_CLIENT_SECRET = 'q4LaRjxVVLKcSFvq8D*=8FepDhb_TklZx'
-DAUTH_REDIRECT_URI = 'http://localhost:5000/callback'
-DAUTH_AUTH_URL = 'https://auth.delta.nitt.edu/authorize'
-DAUTH_TOKEN_URL = 'https://auth.delta.nitt.edu/api/oauth/token'
-DAUTH_USER_URL = 'https://auth.delta.nitt.edu/api/resources/user'
 
 
 @app.route('/')
